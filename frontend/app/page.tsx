@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 export default function GithubRepoInput() {
   const [repoUrl, setRepoUrl] = useState("");
   const [siteUrl, setSiteUrl] = useState("");
-  const [color, setColor] = useState("#ffffff");
+  const [color] = useState("#ffffff");
 
   const handleInputChange = (e: any) => {
     setRepoUrl(e.target.value);
