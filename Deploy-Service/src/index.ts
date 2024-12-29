@@ -1,15 +1,16 @@
 import { createClient ,commandOptions} from "redis";
-import { copyFinalDist, downloadS3Folder } from "./aws";
+import { copyFinalDist, downloadS3Folder , deleteFolder } from "./aws";
 import { buildProject } from "./command";
 import 'dotenv/config'
 require('dotenv').config()
 
-const subscriber = createClient();
+const subscriber = createClient({
+    url: `${process.env.REDIS_URL}`
+});
 subscriber.connect();
 
 async function main(){
     while(1){
-        console.log(process.env.accessKeyId);
         const response = await subscriber.brPop(commandOptions({isolated:true}),
         'build-queue', 0
         );
@@ -23,7 +24,7 @@ async function main(){
         console.log("build done");
 
         copyFinalDist(id);
-
+    
 
     }
 }

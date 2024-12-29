@@ -7,7 +7,9 @@ import { getAllFiles } from "./file";
 import { uploadFile } from "./aws";
 import { createClient } from "redis";
 
-const publisher = createClient();
+const publisher = createClient({
+    url: `${process.env.REDIS_URL}`
+});
 publisher.connect();
 
 const app = express();
@@ -21,10 +23,10 @@ app.post("/deploy", async (req, res) => {
 
     const files = getAllFiles(path.join(__dirname, `output/${id}`));
 
-    files.forEach(async file => {
+    await Promise.all(files.map(async file => {
         const filePath = file.replace(/\\/g, "/");
-        await uploadFile( filePath.slice(__dirname.length + 1), file);
-    });
+        await uploadFile(filePath.slice(__dirname.length + 1), file);
+    }));
 
     publisher.lPush("build-queue", id);
 
