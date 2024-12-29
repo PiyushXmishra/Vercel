@@ -1,12 +1,8 @@
 "use client";
 import { useState } from "react";
-import { motion } from "framer-motion";
 import axios from "axios";
-import { cn } from "@/lib/utils";
 import Particles from "@/components/ui/particles";
 import Navbar from "@/components/Navbar";
-import { div } from "framer-motion/client";
-import ShimmerButton from "@/components/ui/shimmer-button";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -25,12 +21,12 @@ export default function GithubRepoInput() {
       return;
     }
       setSiteUrl("");
-    axios.post("http://localhost:3000/deploy", { repoUrl }).then((res) => {
+    axios.post(`${process.env.NEXT_PUBLIC_UPLOAD_HANDLER}`, { repoUrl }).then((res) => {
       const id = res.data.id;
 
       if (id) {
         // Set the dynamically generated URL for the user to visit
-        setSiteUrl(`http://${id}.localhost:3001`);
+        setSiteUrl(`${process.env.NEXT_PUBLIC_PROTOCOL}://${id}.${process.env.NEXT_PUBLIC_DEPLOYMENT_URL}`);
       }
     });
 

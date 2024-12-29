@@ -6,10 +6,11 @@ const app = express();
 app.use(express.json());
 
 const port = process.env.PORT || 3001;
-const accessKeyId = "aac48646ea30c2b4b097d5fa2f653b1b"; 
-const secretAccessKey = "137b36dd4a6c19f10122ebdd113466c7b7916f79452feb16cdd614ec758db8b0"; 
-const endpoint = "https://mbkpfcvfeibfxjjarpzl.supabase.co/storage/v1/s3"; 
-const region = 'ap-south-1';
+
+const accessKeyId = process.env.ACCESS_KEY_ID;
+const secretAccessKey = process.env.SECRET_ACCESS_KEY; 
+const endpoint = process.env.ENDPOINT;
+const region = process.env.REGION;
 
 const s3 = new S3Client({
   forcePathStyle: true,
