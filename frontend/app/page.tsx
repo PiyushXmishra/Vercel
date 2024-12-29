@@ -11,7 +11,7 @@ export default function GithubRepoInput() {
   const [siteUrl, setSiteUrl] = useState("");
   const [color] = useState("#ffffff");
 
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRepoUrl(e.target.value);
   };
 
