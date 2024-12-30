@@ -13,17 +13,13 @@ const secretAccessKey = process.env.SECRET_ACCESS_KEY;
 const endpoint = process.env.ENDPOINT;
 const region = process.env.REGION;
 
-if (!accessKeyId || !secretAccessKey) {
-  throw new Error("AWS credentials are not defined");
-}
-
 const s3 = new S3Client({
   forcePathStyle: true,
-  endpoint: endpoint,
-  region: region,
+  endpoint: "https://mbkpfcvfeibfxjjarpzl.supabase.co/storage/v1/s3",
+  region: "ap-south-1",
   credentials: {
-    accessKeyId: accessKeyId,
-    secretAccessKey: secretAccessKey,
+    accessKeyId: "aac48646ea30c2b4b097d5fa2f653b1b",
+    secretAccessKey: "137b36dd4a6c19f10122ebdd113466c7b7916f79452feb16cdd614ec758db8b0",
   },
 });
 
