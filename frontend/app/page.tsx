@@ -25,8 +25,7 @@ export default function GithubRepoInput() {
       const id = res.data.id;
 
       if (id) {
-        // Set the dynamically generated URL for the user to visit
-        setSiteUrl(`${process.env.NEXT_PUBLIC_PROTOCOL}://${id}.${process.env.NEXT_PUBLIC_DEPLOYMENT_URL}`);
+        setSiteUrl(`${process.env.NEXT_PUBLIC_PROTOCOL}://${process.env.NEXT_PUBLIC_DEPLOYMENT_URL}/${id}`);
       }
     });
 

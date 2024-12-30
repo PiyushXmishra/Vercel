@@ -8,7 +8,7 @@ app.use(express.json());
 const port = process.env.PORT || 3001;
 
 const accessKeyId = process.env.ACCESS_KEY_ID;
-const secretAccessKey = process.env.SECRET_ACCESS_KEY; 
+const secretAccessKey = process.env.SECRET_ACCESS_KEY;
 const endpoint = process.env.ENDPOINT;
 const region = process.env.REGION;
 
@@ -22,14 +22,14 @@ const s3 = new S3Client({
   },
 });
 
-app.get("/*", async (req, res) => {
+app.get('/:id/*', async (req, res) => {
   try {
-    const host = req.hostname;
-    const id = host.split(".")[0];
-    let filePath = req.path;
-    if(filePath === "/") {
-      filePath = "/index.html";
+    const id = req.params.id; 
+    let filePath = req.path.replace(`/${id}`, ''); 
+    if (filePath === '/') {
+      filePath = '/index.html';
     }
+
     console.log("filepath", filePath);
     console.log("id", id);
     console.log("key", `dist/${id}${filePath}`);
@@ -43,12 +43,12 @@ app.get("/*", async (req, res) => {
 
     if (Body instanceof Readable) {
       const type = filePath.endsWith("html")
-  ? "text/html"
-  : filePath.endsWith("css")
-  ? "text/css"
-  : filePath.endsWith("svg")
-  ? "image/svg+xml"
-  : "application/javascript";
+        ? "text/html"
+        : filePath.endsWith("css")
+        ? "text/css"
+        : filePath.endsWith("svg")
+        ? "image/svg+xml"
+        : "application/javascript";
 
       res.setHeader("Content-Type", type);
       Body.pipe(res);
