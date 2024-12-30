@@ -1,9 +1,10 @@
 import express from 'express';
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { Readable } from 'stream'; // To handle the stream
-
+import cors from 'cors';
 const app = express();
 app.use(express.json());
+app.use(cors())
 
 const port = process.env.PORT || 3001;
 
@@ -12,13 +13,17 @@ const secretAccessKey = process.env.SECRET_ACCESS_KEY;
 const endpoint = process.env.ENDPOINT;
 const region = process.env.REGION;
 
+if (!accessKeyId || !secretAccessKey) {
+  throw new Error("AWS credentials are not defined");
+}
+
 const s3 = new S3Client({
   forcePathStyle: true,
-  endpoint: "https://mbkpfcvfeibfxjjarpzl.supabase.co/storage/v1/s3",
-  region: "ap-south-1",
+  endpoint: endpoint,
+  region: region,
   credentials: {
-    accessKeyId: "aac48646ea30c2b4b097d5fa2f653b1b",
-    secretAccessKey: "137b36dd4a6c19f10122ebdd113466c7b7916f79452feb16cdd614ec758db8b0",
+    accessKeyId: accessKeyId,
+    secretAccessKey: secretAccessKey,
   },
 });
 
@@ -82,3 +87,4 @@ app.get("/*", async (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
