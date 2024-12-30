@@ -8,47 +8,69 @@ app.use(express.json());
 const port = process.env.PORT || 3001;
 
 const accessKeyId = process.env.ACCESS_KEY_ID;
-const secretAccessKey = process.env.SECRET_ACCESS_KEY;
+const secretAccessKey = process.env.SECRET_ACCESS_KEY; 
 const endpoint = process.env.ENDPOINT;
 const region = process.env.REGION;
+
+if (!accessKeyId || !secretAccessKey) {
+  throw new Error("AWS credentials are not defined");
+}
 
 const s3 = new S3Client({
   forcePathStyle: true,
   endpoint: endpoint,
   region: region,
   credentials: {
-    accessKeyId: accessKeyId!,
-    secretAccessKey: secretAccessKey!,
+    accessKeyId: accessKeyId,
+    secretAccessKey: secretAccessKey,
   },
 });
 
-app.get('/:id/*', async (req, res) => {
+app.get("/*", async (req, res) => {
   try {
-    const id = req.params.id; 
-    let filePath = req.path.replace(`/${id}`, ''); 
-    if (filePath === '/') {
-      filePath = '/index.html';
+    const host = req.path; 
+    console.log("Original Path: ", host);
+
+    const pathSegments = host.split("/");
+    const id = pathSegments[1]; 
+
+    let filePath = pathSegments.slice(2).join("/"); 
+    
+    if (!filePath) {
+      filePath = "/"; 
     }
 
-    console.log("filepath", filePath);
-    console.log("id", id);
-    console.log("key", `dist/${id}${filePath}`);
+    if (filePath !== "/" && !filePath.startsWith("/")) {
+      filePath = `/${filePath}`;
+    }
 
+    if (filePath === "/") {
+      filePath = "/index.html";
+    }
+
+    console.log("Extracted ID: ", id);
+    console.log("Extracted File Path: ", filePath);
+
+    const key = `dist/${id}${filePath}`;
+
+    console.log("S3 Key: ", key);
+
+    
     const command = new GetObjectCommand({
       Bucket: "storagevercel", 
-      Key: `dist/${id}${filePath}`,
+      Key: key,
     });
     
     const { Body } = await s3.send(command);
 
     if (Body instanceof Readable) {
       const type = filePath.endsWith("html")
-        ? "text/html"
-        : filePath.endsWith("css")
-        ? "text/css"
-        : filePath.endsWith("svg")
-        ? "image/svg+xml"
-        : "application/javascript";
+  ? "text/html"
+  : filePath.endsWith("css")
+  ? "text/css"
+  : filePath.endsWith("svg")
+  ? "image/svg+xml"
+  : "application/javascript";
 
       res.setHeader("Content-Type", type);
       Body.pipe(res);

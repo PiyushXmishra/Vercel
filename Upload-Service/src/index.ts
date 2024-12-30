@@ -6,6 +6,7 @@ import path from "path";
 import { getAllFiles } from "./file";
 import { uploadFile } from "./aws";
 import { createClient } from "redis";
+import { createOrUpdateViteConfig } from "./ChangeBase";
 
 const publisher = createClient({
     url: `${process.env.REDIS_URL}`
@@ -20,6 +21,8 @@ app.post("/deploy", async (req, res) => {
     const repoUrl = req.body.repoUrl;
     const id = generate();
     await simpleGit().clone(repoUrl, path.join(__dirname, `output/${id}`));
+
+    createOrUpdateViteConfig(id, path.join(__dirname, `output/${id}`));
 
     const files = getAllFiles(path.join(__dirname, `output/${id}`));
 
