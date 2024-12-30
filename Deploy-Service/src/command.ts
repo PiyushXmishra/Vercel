@@ -3,8 +3,9 @@ import path from "path";
 
 export function buildProject(id: string) {
     return new Promise((resolve) => {
-        const child = exec(`cd ${path.join(__dirname, `output/${id}`)} && npm install --include=dev
- && npm run build`)
+        const child = exec(
+            `sh -c "cd ${path.join(__dirname, `output/${id}`)} && npm install --include=dev && npm run build"`
+          );
 
         child.stdout?.on('data', function(data) {
             console.log('stdout: ' + data);
