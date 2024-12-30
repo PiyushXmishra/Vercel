@@ -3,6 +3,7 @@ import cors from "cors";
 import generate from "./utils/generate";
 import simpleGit from "simple-git";
 import path from "path";
+import fs from "fs";
 import { getAllFiles } from "./file";
 import { uploadFile } from "./aws";
 import { createClient } from "redis";
@@ -32,6 +33,14 @@ app.post("/deploy", async (req, res) => {
     }));
 
     publisher.lPush("build-queue", id);
+
+    fs.rm(path.join(__dirname, `output/${id}`), { recursive: true, force: true }, (err) => {
+        if (err) {
+            console.error("Error deleting folder:", err);
+        } else {
+            console.log("Folder deleted successfully");
+        }
+    });
 
     res.json({
         "id": id

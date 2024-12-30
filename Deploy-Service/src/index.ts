@@ -3,6 +3,8 @@ import { copyFinalDist, downloadS3Folder , deleteFolder } from "./aws";
 import { buildProject } from "./command";
 import 'dotenv/config'
 require('dotenv').config()
+import * as fs from 'fs';
+import * as path from 'path';
 
 const subscriber = createClient({
     url: `${process.env.REDIS_URL}`
@@ -24,6 +26,14 @@ async function main(){
         console.log("build done");
 
         copyFinalDist(id);
+        fs.rm(path.join(__dirname, `output/${id}`), { recursive: true, force: true }, (err) => {
+            if (err) {
+                console.error("Error deleting folder:", err);
+            } else {
+                console.log("Folder deleted successfully");
+            }
+        });
+    
     
 
     }
