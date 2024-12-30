@@ -33,18 +33,14 @@ const s3 = new client_s3_1.S3Client({
 });
 app.get("/*", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const host = req.path; // Full path including the /id/* part
+        const host = req.path;
         console.log("Original Path: ", host);
-        // Step 1: Extract the `id` as the second segment in the URL
-        const pathSegments = host.split("/"); // Split the URL path into segments
-        const id = pathSegments[1]; // This should be the ID after the first slash
-        // Step 2: Extract file path if it exists after the ID
-        let filePath = pathSegments.slice(2).join("/"); // Take the part after the ID as filePath
-        // If no filePath is found, it defaults to '/'
+        const pathSegments = host.split("/");
+        const id = pathSegments[1];
+        let filePath = pathSegments.slice(2).join("/");
         if (!filePath) {
-            filePath = "/"; // Representing the root URL, which you later resolve as /index.html
+            filePath = "/";
         }
-        // Ensure the file path starts with a slash
         if (filePath !== "/" && !filePath.startsWith("/")) {
             filePath = `/${filePath}`;
         }
@@ -53,10 +49,8 @@ app.get("/*", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         console.log("Extracted ID: ", id);
         console.log("Extracted File Path: ", filePath);
-        // Construct the S3 key, e.g., dist/{id}/{filePath}
         const key = `dist/${id}${filePath}`;
         console.log("S3 Key: ", key);
-        // Fetch the file from S3
         const command = new client_s3_1.GetObjectCommand({
             Bucket: "storagevercel",
             Key: key,
