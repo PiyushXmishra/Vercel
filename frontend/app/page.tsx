@@ -77,7 +77,7 @@ export default function GithubRepoInput() {
       <Navbar />
       <div className="flex flex-col items-center min-h-screen bg-black text-white">
         <div className="bg-gradient-to-br from-white from-30% to-white/40 bg-clip-text pt-28 p-4 max-w-6xl text-center text-5xl font-medium leading-none tracking-tighter text-transparent sm:text-6xl md:text-7xl lg:text-8xl">
-          Deploy and host your React App in seconds!
+          Deploy and host your Vite + React App in seconds!
         </div>
 
         <div className="text-white/50 text-2xl p-4 text-center ">
@@ -94,7 +94,7 @@ export default function GithubRepoInput() {
           />
           <Button
             type="submit"
-            className="rounded-3xl border-2 border-gray-800 hover:border-gray-500 p-6"
+            className="rounded-3xl border-2  border-gray-800 hover:border-gray-500 p-6"
             onClick={handleSubmit}
           >
             Submit
