@@ -3,10 +3,16 @@ import path from "path";
 
 export function buildProject(id: string) {
     return new Promise((resolve, reject) => {
-        const dir = path.join(__dirname, `output/${id}`);
+        const dir = path.resolve(__dirname, `output/${id}`);
+        console.log(`Building project in directory: ${dir}`);
+
+        const npmPath = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 
         // Run `npm install` first
-        const npmInstall = spawn('npm', ['install', '--include=dev'], { cwd: dir });
+        const npmInstall = spawn(npmPath, ['install', '--include=dev'], {
+            cwd: dir,
+            shell: process.platform === 'win32',
+        });
 
         npmInstall.stdout?.on('data', (data) => {
             console.log('stdout (install): ' + data);
@@ -21,7 +27,10 @@ export function buildProject(id: string) {
             }
 
             // Run `npm run build` after install
-            const npmBuild = spawn('npm', ['run', 'build'], { cwd: dir });
+            const npmBuild = spawn(npmPath, ['run', 'build'], {
+                cwd: dir,
+                shell: process.platform === 'win32',
+            });
 
             npmBuild.stdout?.on('data', (data) => {
                 console.log('stdout (build): ' + data);
